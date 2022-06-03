@@ -1,0 +1,88 @@
+{% extends "weather_app/home.html" %} {% block title %}
+<title>Search</title>
+{% endblock title %} {% block content %}
+<br />
+
+{% if err %} {{err}} {% else %}
+<div class="row border m-5" style="background-color: #b6d0e0">
+  <div class="col-8 m-4">
+    <div class="d-flex">
+      <h2>Today in {{name}}</h2>
+      <span class="text-muted mx-4" id="time">as of </span>
+    </div>
+    <h3>{{temp}} degrees</h3>
+    <h4>{{weather_description}}</h4>
+    <h5 class="d-inline">Low: {{temp_min}}</h5>
+    <h5 class="d-inline">High: {{temp_max}}</h5>
+  </div>
+
+  <div class="col-3">
+    <span><img src="{{icon_url}}" alt="" class="img" /></span>
+  </div>
+</div>
+{% endif %}
+
+<!-- <input id="userZip" type="text" />
+<button id="zipBtn" type="submit">Submit</button>
+<br />
+<div id="weather"></div> -->
+{{results}}
+
+<script>
+  getTime();
+  function getTime() {
+    const timeSpan = document.getElementById("time");
+    const today = new Date();
+    console.log(today);
+    const date =
+      today.getFullYear() +
+      "-" +
+      (today.getMonth() + 1) +
+      "-" +
+      today.getDate();
+    const time =
+      today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    const dateTime = date + " " + time;
+
+    const timeBox = document.createElement("span");
+    timeBox.innerHTML = dateTime;
+    timeSpan.appendChild(timeBox);
+  }
+
+  const weatherDiv = document.getElementById("weather");
+  const userZip = document.getElementById("userZip");
+  const zipBtn = document.getElementById("zipBtn");
+  zipBtn.addEventListener("click", getZip);
+
+  function getZip() {
+    const zipText = userZip.value;
+    // console.log(zipText)
+    userZip.value = "";
+    getByZip(zipText);
+  }
+
+  async function getByZip(x) {
+    const url = `https://api.openweathermap.org/data/2.5/weather?zip=${x},us&appid=521030405ccbd08fb7f9d42f0860faec`;
+    const response = await fetch(url);
+    const data = await response.json();
+    const name = document.createElement("h2");
+    const weatherContainer = document.createElement("div");
+    const minTemp = document.createElement("h4");
+    const temp = document.createElement("h4");
+    const maxTemp = document.createElement("h4");
+    //
+
+    //
+    weatherDiv.appendChild(name);
+    name.innerText = data["name"];
+    minTemp.innerText = data["main"]["temp_max"];
+    temp.innerText = data["main"]["temp"];
+    maxTemp.innerText = data["main"]["temp_max"];
+    //
+    console.log(temp);
+    weatherContainer.appendChild(temp);
+    weatherDiv.appendChild(weatherContainer);
+  }
+</script>
+
+{% endblock content %}

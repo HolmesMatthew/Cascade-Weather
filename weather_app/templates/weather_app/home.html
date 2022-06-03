@@ -1,0 +1,335 @@
+ {% load static %}
+ <!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--  -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+    {% block title %}
+    <title>Cascade Weather</title>
+    {% endblock title %}
+</head>
+<body style="background-color: #deeef9;">
+
+    <nav class="navbar navbar-expand-lg " style="background-color: #a8d1ee;">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'image/z.png' %}" alt="" width="30" height="24" class="d-inline-block align-text-top">
+                Cascade Weather
+          </a>
+
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <form class="d-flex" role="search" action="{% url 'search' %}" method="POST">
+              {% csrf_token %}
+            <input id="search" name="search" class="form-control me-2" type="search" placeholder="Search by Zip Code" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+          <div class="d-flex justify-content-between collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+
+                            <!-- <li class="nav-item">
+                                <a class="nav-link" href="{% url 'search' %}">Search</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">3 day forecast</a>
+                            </li> -->
+                    </ul>
+                    {% if not request.user.is_anonymous and 'profile' not in request.path %}
+                    <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'profile' %}">Account</a>
+                            </li>
+                    </ul>
+                    {% elif 'profile' in request.path %}
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout_user' %}">Logout</a>
+                        </li>
+
+                    </ul>        
+
+                    {% else %}
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'sign_up' %}">Sign up</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {% block content %}
+      {{location}}
+
+      
+      <!-- main -->
+      <div class="row border m-5" style="background-color: #b6d0e0;">
+          <div class=" col-8 m-4">
+              <div class="d-flex">
+                  <h2>Today in {{city}} </h2>
+                  <span class="text-muted mx-4" id="time">as of </span>
+                </div>
+                <h3>{{temp}} degrees</h3>
+                <h4>{{weather_description}}</h4>
+                <h5 class="d-inline">Low: {{min}}</h5> <h5 class="d-inline">High: {{max}}</h5>
+            </div>
+            
+            <div class="col-3 ">
+                <span><img src="{{icon_url}}" alt="" class="img"></span>
+            </div>
+        </div>
+
+    <!-- News -->
+        <!-- <div id="news" class="justify-content-center">
+            <div id="news-contents" class="d-flex justify-content-center">
+                <div class="titles col-3 m-2"><h4>{{titles.0}}</h4></div>
+                <div class="titles col-3 m-2"><h4>{{titles.1}}</h4></div>
+                <div class="titles col-3 m-2"><h4>{{titles.2}}</h4></div>
+            </div>
+            <div class="abstract col-3 m-2"><h4>{{abstract.0}}</h4></div>
+            <br>
+            <div class="d-flex justify-content-center">
+                <div class="titles col-3 m-2"><h4>{{titles.3}}</h4></div>
+                <div class="titles col-3 m-2"><h4>{{titles.4}}</h4></div>
+                <div class="titles col-3 m-2"><h4>{{titles.5}}</h4></div>
+
+            </div>
+
+        </div> -->
+        <div id="carouselExampleCaptions" class="carousel  slide m-5" data-bs-ride="false">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="https://placekitten.com/2001/300" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                    <script>
+                        
+                    </script>
+                  <h5>{{titles.0}}</h5>
+                  <p>{{abstract.0}}</p>
+                    <a href="{{urls.0}}" style="text-decoration: None; color: white;">Keep Reading on New York Times</a>
+                </div>
+            </div>
+            
+            <div class="carousel-item">
+                <img src="https://placekitten.com/2003/300" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>{{titles.1}}</h5>
+                    <p>{{abstract.1}}</p>
+                    <a href="{{urls.1}}" style="text-decoration: None; color: white;">Keep Reading on New York Times</a>
+                    
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://placekitten.com/2000/302" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+
+                    <h5>{{titles.2}}</h5>
+                    <p>{{abstract.2}}</p>
+                    <a href="{{urls.2}}" style="text-decoration: None; color: white;">Keep Reading on New York Times</a>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    
+    
+
+    <!-- forecast -->
+    <div class="row border m-5 text-center" style="background-color: #b6d0e0;"> 
+        <!-- use javascript to populate forecast -->
+        <h2 class="text-start">4 day forecast</h2>
+        <!-- getting weekdays -->
+        <div id="days" class="d-flex flex-row "></div>
+
+        <div class="d-flex row">
+            {% for min in min_for  %}
+            <div class="col-3 "><span>Low: {{min}}</span></div>
+            {% endfor %}
+
+
+
+            {% for x in avg_for  %}
+            <!-- <div class="col-3">
+                <div class="w-100 rounded-pill" style="background-color: rgb(128, 195, 243);">
+                    <span>
+                        {{x}}
+                    </span>
+                </div>
+            </div> -->
+            
+            {% if 25 > x %}
+
+            <div class="d-flex justify-content-center col-3">
+                <div class="w-25 rounded-pill" style="background-color: rgb(128, 195, 243);">
+                    <span>
+                        {{x}}
+                    </span>
+                </div>
+            </div>
+            {% elif x > 25 and x < 50 %}
+            <div class="d-flex justify-content-center col-3">
+                <div class="w-50 rounded-pill" style="background-color: rgb(242, 233, 62);">
+                    <span>
+                        {{x}}
+                    </span>
+                </div>
+            </div>
+
+            {% elif x > 50 and x < 75 %}
+            <div class="d-flex justify-content-center col-3">
+                <div class="w-75 rounded-pill" style="background-color: rgb(233, 155, 67);">
+                    <span>
+                        {{x}}
+                    </span>
+                </div>
+            </div>
+
+            {% elif x > 75 and x < 100 %}
+            <div class="d-flex justify-content-center col-3">
+                <div class="w-100 rounded-pill" style="background-color: rgb(240, 116, 116);">
+                    <span>
+                        {{x}}
+                    </span>
+                </div>
+            </div>
+
+
+            {% endif %}
+
+            {% endfor %}
+
+
+            {% for max in max_for %}
+            <div class="col-3 "><span>High: {{max}}</span></div>
+            {% endfor %}
+        </div> 
+        <!-- end forecast -->
+    
+    </div>
+
+    <!-- depreciated -->
+    <!-- <iframe class=""
+      width="600"
+      height="450"
+      style="border:0"
+      loading="lazy"
+      allowfullscreen
+      referrerpolicy="no-referrer-when-downgrade"
+      src="https://www.google.com/maps/embed/v1/search?key=AIzaSyCFm38ujlaaGZ0P9OjzfGgF5seefiRCWiU
+        &q=42.2808,-122.93068">
+    </iframe> -->
+
+
+
+
+<script>
+    const newsContents= document.getElementById('news-contents')
+    getNews()
+    async function getNews(){
+        const url= 'https://api.nytimes.com/svc/mostpopular/v2/shared/1/facebook.json?api-key=WejtFmpOwuiZKQ8d2fAC7tq8hXpaRhV6'
+        const response= await fetch(url)
+        const data= await response.json()
+        console.log(data)
+    }
+
+    // for forecast
+    const container= document.getElementById('days')
+    const today= {{today}}
+    const weekdays= ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+    console.log(weekdays.length)
+    const dayWeek= {{weekday}}
+    let weekDay= dayWeek
+
+
+    for(let count =1; count < 5; count++){
+        if(weekDay < weekdays.length-1){
+            weekDay++
+        }
+        else {
+            weekDay = 0
+        }
+        const div= document.createElement('div')
+        div.setAttribute('class','col-3')
+        let test= count+today
+        // console.log(test)
+        const span=document.createElement('span')
+       
+        // span.innerText= `${weekdays[weekDay]} the ${test}`
+        span.innerText= `${weekdays[weekDay]}`
+
+        div.appendChild(span)
+        span.setAttribute('class','me-4')
+        container.appendChild(div)
+    }
+    // ------------------------------
+    // for location and time in main display
+    getTime()
+    function getTime(){
+        const timeSpan= document.getElementById('time')
+        const today = new Date();
+        console.log(today)
+        const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        const dateTime = date+' '+time; 
+        
+        const timeBox= document.createElement('span')
+        timeBox.innerHTML= dateTime
+        timeSpan.appendChild(timeBox)
+    }
+    
+    
+    getIp()
+    async function getIp(){
+        const url= 'http://ip-api.com/json'
+        const response= await fetch(url)
+        const data= await response.json()
+        console.log(data, 'data from ip-api')
+        
+        let lat= data.lat
+        let lon= data.lon
+        
+        getForecast(lat,lon)
+        
+    }
+    
+    
+    async function getForecast(lat, lon){
+        const key= '521030405ccbd08fb7f9d42f0860faec'
+        // docs: for open weather api https://openweathermap.org/forecast5
+        const url= `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${key}`
+        // const url= `https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${lat}&lon=${lon}&appid=${key}`
+        const response= await fetch(url)
+        const data= await response.json()
+        console.log(data,'forecast')
+        
+    }
+    
+    
+</script>
+
+
+{% endblock content %}
+<div class="border-top text-center">
+    <h5>&copy;Matthew Holmes 2022</h5>
+</div>
+</body>
+</html>

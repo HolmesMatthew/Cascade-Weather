@@ -1,0 +1,19 @@
+{% extends "weather_app/home.html" %} 
+{% block content %}
+<!-- <a href="{% url 'edit' user.id %}">Edit profile</a> -->
+
+<h2>Welcome {{request.user}}</h2> 
+
+<script>
+    const user_id= "778MYSEL3125"
+    const url= `
+    http://production.shippingapis.com/ShippingAPI.dll?API=CityStateLookup
+&XML=<CityStateLookupRequest USERID="${user_id}"><ZipCode ID= "0"><Zip5>90210</Zip5></ZipCode></CityStateLookupRequest>`
+console.log(fetch(url))
+</script>
+
+
+
+<!-- fippscountyzipfiles -->
+<!--  -->
+{% endblock content %}
