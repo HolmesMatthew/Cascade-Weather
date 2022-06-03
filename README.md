@@ -27,7 +27,7 @@ Weather/News app. The goal behind Cascade Weather is to create a weather and new
 #### Search
 
 - Get Zip code
-  - verify zip code (currently only manages numerical: '12345')
+  - verify zip code
   - pass zip code to weather api
 - Load weather
   - pass weather data threw django view
