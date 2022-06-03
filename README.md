@@ -25,7 +25,7 @@ Weather/News app. The goal behind Cascade Weather is to create a weather and new
 - Load weather  
   - pass weather data threw django view
   - pass final data to HMTL
-__
+___
 
 ## Schedule
 
