@@ -1,7 +1,7 @@
 # Cascade-Weather
 For when Googles not good enough
 > capstone project for PDX code guild
-__
+
 
 ## Project Overview
 Weather/News app. The goal behind Cascade Weather is to create a weather and news app using `Open Weather Map api` and `New York Times api`. The app will aslo be using `ip-api` to get the users current location. The user will have access to current and forecast weather data as well as the abliltiy to search by zip code
