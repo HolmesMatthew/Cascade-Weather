@@ -1,8 +1,43 @@
-{% extends "weather_app/home.html" %} 
-{% block title %}
-    <title>test</title>
-{% endblock title %}
-
+{% extends "weather_app/home.html" %}
+<br />
 {% block content %}
+<h1>asdjf</h1>
+<iframe
+  style="height: 1000px; width: 1000px"
+  width="500"
+  src="https://tile.openweathermap.org/map/temp_new/10/1023/1024/?appid=521030405ccbd08fb7f9d42f0860faec"
+  frameborder="0"
+>
+</iframe>
+<script>
+  async function getIp() {
+    const url = "http://ip-api.com/json";
+    const response = await fetch(url);
+    const data = await response.json();
+
+    let lat = data.lat;
+    let lon = data.lon;
+    return getTest(lat, lon);
+  }
+
+  async function getTest(lat, lon) {
+    const key = "521030405ccbd08fb7f9d42f0860faec";
+    const layer = "temp_new";
+    const z = "6";
+    const x = 13;
+    const y = 42;
+    // const x = lat;
+    // const y = lon;
+
+    // docs: for open weather api https://openweathermap.org/forecast5
+    const url = `https://tile.openweathermap.org/map/${layer}/${z}/lat=${x}/lon=${y}.png?appid=${api_key}`;
+    // const url= `https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${lat}&lon=${lon}&appid=${key}`
+    // const response = await fetch(url);
+    // console.log(response);
+    // const data = await response.json();
+    // console.log(data);
+    return url;
+  }
+</script>
 
 {% endblock content %}
