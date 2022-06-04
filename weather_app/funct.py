@@ -1,4 +1,5 @@
 from time import time
+from urllib import response
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -11,6 +12,44 @@ from .forms import NewUser, LoginUser
 from django.contrib.auth.decorators import login_required
 
 # -----------------------------------------------
+# https://openweathermap.org/weathermap?basemap=map&cities=false&layer=radar&lat=30&lon=-20&zoom=3
+# https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={API key}
+
+
+def get_map():
+    loc = get_location()
+    lat = loc['lat']
+    lon = loc['lon']
+    print(lat, lon)
+    # op = 'TA2'
+    layer = 'temp_new'
+    z = '6'
+    # x = f'lat={lat}'
+    x = str(lat)
+    # y = f'lon={lon}'
+    y = str(lon)
+    api_key = '521030405ccbd08fb7f9d42f0860faec'
+    # https://openweathermap.org/weathermap?basemap=map&cities=false&layer=temperature&lat=30&lon=-20&zoom=3
+    url = f'https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={api_key}'
+    # url = f"https://tile.openweathermap.org/map/precipitation_new/3/48/-114.3472.png?appid=521030405ccbd08fb7f9d42f0860faec"
+    # url = f"http://maps.openweathermap.org/maps/2.0/weather/{op}/{z}/{x}/{y}?appid={api_key}"
+    response = requests.get(url)
+    print(response)
+
+
+def img_search(x):
+    url = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI"
+    querystring = {"q": "x", "pageNumber": "1",
+                   "pageSize": "10", "autoCorrect": "true"}
+
+    headers = {
+        "X-RapidAPI-Host": "contextualwebsearch-websearch-v1.p.rapidapi.com",
+        "X-RapidAPI-Key": "fbf4e82c6emshdd25d05f00e9436p172153jsn2569b320a45d"
+    }
+
+    response = requests.request(
+        "GET", url, headers=headers, params=querystring)
+    print(response.text)
 
 
 def search_by_zip(query_search):

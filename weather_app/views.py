@@ -90,6 +90,7 @@ def edit_profile(request, id):
 
 
 def search(request):
+    get_map()
     if request.method == 'GET':
         return render(request, 'weather_app/search.html')
     elif request.method == "POST":
@@ -167,6 +168,12 @@ def get_weather(request):
     weather_description = data_json['weather'][0]['description']
     icon = data_json['weather'][0]['icon']
     icon_url = (f'http://openweathermap.org/img/wn/{icon}@2x.png')
+    # get the city
+    city = data_json['name']
+    # temp data
+    minTemp = kelvin_to_fahrenheit(data_json['main']['temp_min'])
+    temp = kelvin_to_fahrenheit(data_json['main']['temp'])
+    maxTemp = kelvin_to_fahrenheit(data_json['main']['temp_max'])
 
     # -----------------------------------------------
 
@@ -178,21 +185,14 @@ def get_weather(request):
     # for i, x in enumerate(titles):
     #     print(i)
 
+    # f_temp= round((float(temp)-273.15) * (9/5) + 32)
+
     # -----------------------------------------------
     # get forecast
     forecast = get_forecast()
     forecast_min = forecast[0]
     forecast_avg = forecast[1]
     forecast_max = forecast[2]
-
-    # get the city
-    city = data_json['name']
-    # temp data
-    minTemp = kelvin_to_fahrenheit(data_json['main']['temp_min'])
-    temp = kelvin_to_fahrenheit(data_json['main']['temp'])
-    maxTemp = kelvin_to_fahrenheit(data_json['main']['temp_max'])
-    # f_temp= round((float(temp)-273.15) * (9/5) + 32)
-    # pass data to html
 
     context = {
         # the current date
