@@ -1,3 +1,4 @@
+from select import KQ_FILTER_WRITE
 from time import time
 from urllib import response
 from django.http import HttpResponse, HttpResponseRedirect
@@ -121,7 +122,27 @@ def get_forecast():
     temp_average = []
     temp_max = []
 
-    # print(box)
+    weather = {
+        'one': [],
+        'two': [],
+        'three': [],
+        'four': [],
+    }
+
+    weather_desc = {
+        'one': [],
+        'two': [],
+        'three': [],
+        'four': [],
+    }
+    # sort through forecast weather descriptions for icons
+    for x in box:
+        for v in box[x]:
+            weather[x].append(v['weather'][0])
+    for v in weather:
+        for x in weather[v]:
+            if x['description'] not in weather_desc[v]:
+                weather_desc[v].append(x['description'])
 
     # get min
     for x in box:
@@ -157,12 +178,20 @@ def get_news():
     news_titles = {}
     news_abstract = {}
     news_url = {}
-
+    keywords = {}
     for i, x in enumerate(json_data['results']):
         # print(x['title'])
+        # print(x['adx_keywords'])
+        keywords[i] = [x['adx_keywords']]
+
         news_titles[i] = x['title']
         news_abstract[i] = x['abstract']
         news_url[i] = x['url']
+    # print(keywords[0][0])
+    keywords_zero = []
+    keywords_zero.append(keywords[0][0])
+
+    # print(keywords_zero)
     return [news_titles, news_abstract, news_url]
 
 

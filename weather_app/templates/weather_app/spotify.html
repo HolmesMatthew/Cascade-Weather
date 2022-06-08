@@ -1,0 +1,57 @@
+{% extends "weather_app/home.html" %} {% load static %} {% block content %}
+<script defer src="{% static 'js/spotify.js' %}"></script>
+<h1>spotify</h1>
+{% if token %} {{token}} {% endif %}
+<br />
+<button id="id">click</button>
+<a href="{% url 'test' %}">tewst</a>
+<a href="{% url 'spotify-login' %}">login</a>
+<br />
+<button @click="login">Login with Spotify</button>
+
+<script>
+  const button = document.getElementById("id");
+  button.addEventListener("click", spotLogin);
+  const clientId = "8c4452fc1e6a4b3196c9214e07378883";
+
+  //   `https://accounts.spotify.com/authorize${clientId}`,
+  async function spotLogin() {
+    const token = openWindow();
+    async function openWindow() {
+      let popup = window.open(
+        `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=http://127.0.0.1:8000/spotify/&scope=user-read-private&user-read-email&user-top-read&show_dialog=true`,
+        "Login with Spotify",
+        "width=800,height=600"
+      );
+      const queryString = window.location.search;
+      console.log(queryString);
+      //   let token = window.location.hash.substr(1).split("&")[0].split("=")[1];
+      //   if (token) {
+      //     console.log(token);
+      //   }
+
+      //   (spotifyCallback) => {
+      //     popup.close();
+      //     fetch("https://api.spotify.com/v1/me", {
+      //       headers: {
+      //         Authorization: `Bearer ${payload}`,
+      //       },
+      //     })
+      //       .then((response) => {
+      //         return response.json();
+      //         console.log(response);
+      //       })
+      //       .then((data) => {
+      //         console.log(data);
+      //       });
+      //   };
+      //   return token;
+    }
+
+    // if (token) {
+    //   console.log(token, "asdklfjalskj");
+    //   window.opener.spotifyCallback(token);
+    // }
+  }
+</script>
+{% endblock content %}

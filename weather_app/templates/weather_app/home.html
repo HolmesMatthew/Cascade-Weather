@@ -12,26 +12,28 @@
     {% block title %}
     <title>Cascade Weather</title>
     {% endblock title %}
-    <script>
-        function load() {
-          console.log("load event detected!");
-          pageLoad()
-        }
-        window.onload = load;
-      </script>
+
 </head>
     
 <body style="background-color: #deeef9;">
     <script>
 
     </script>
-    <!-- <div onload="pageLoad()" id="loader"></div> -->
+
 
     <nav class="navbar navbar-expand-lg " style="background-color: #a8d1ee;">
         <div class="container-fluid">
-          <a class="navbar-brand" href="{% url 'home' %}">
-                <img src="{% static 'image/z.png' %}" alt="" width="30" height="24" class="d-inline-block align-text-top">
-                Cascade Weather
+          <a class="navbar-brand" href="{% url 'home' %}" >
+                <!-- <img src="{% static 'image/z.png' %}" alt="" width="30" height="24" class="d-inline-block align-text-top"> -->
+                <div class="d-inline-flex m-0 p-0 align-items-center ">
+                    <div>
+                        <span class="fs-6">{{temp}}</span> 
+                        <img src="{{icon_url}}" alt="" width="30" height="24" class="d-inline-block align-text-top">
+                    </div>
+
+                        Cascade Weather
+
+                </div>
           </a>
 
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,13 +78,13 @@
 </nav>
 
       {% block content %}
-      {{location}}
+
     {% if not request.user.is_anonymous %}
     <h2 class="m-2">Welcome {{request.user}}</h2>
     {% endif %}
       
       <!-- main -->
-      <div class="row border m-5" style="background-color: #b6d0e0;">
+      <div class="row border rounded m-5 " style="background-color: #b6d0e0;">
           <div class=" col-8 m-4">
               <div class="d-flex">
                   <h2>Today in {{city}} </h2>
@@ -99,40 +101,27 @@
         </div>
 
     <!-- News -->
-        <!-- <div id="news" class="justify-content-center">
-            <div id="news-contents" class="d-flex justify-content-center">
-                <div class="titles col-3 m-2"><h4>{{titles.0}}</h4></div>
-                <div class="titles col-3 m-2"><h4>{{titles.1}}</h4></div>
-                <div class="titles col-3 m-2"><h4>{{titles.2}}</h4></div>
-            </div>
-            <div class="abstract col-3 m-2"><h4>{{abstract.0}}</h4></div>
-            <br>
-            <div class="d-flex justify-content-center">
-                <div class="titles col-3 m-2"><h4>{{titles.3}}</h4></div>
-                <div class="titles col-3 m-2"><h4>{{titles.4}}</h4></div>
-                <div class="titles col-3 m-2"><h4>{{titles.5}}</h4></div>
-
-            </div>
-
-        </div> -->
-        <div id="carouselExampleCaptions" class="carousel  slide m-5" data-bs-ride="false">
+        <div id="carouselExampleCaptions" class="carousel slide m-5" data-bs-ride="false">
             <div class="carousel-indicators">
               <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
               <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
               <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
             </div>
-            <div class="carousel-inner ">
+
+            <div class="d-flex carousel-inner rounded ">
               <div class="carousel-item active">
-                <img src="https://placekitten.com/2001/300" class="d-block w-100" alt="...">
+                <img src="https://placekitten.com/2001/350" class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block p-2 mt-1">
-                  <h5 class="">{{titles.0}}</h5>
-                  <p>{{abstract.0}}</p>
-                    <a href="{{urls.0}}" style="text-decoration: None; color: white;">Keep Reading on New York Times</a>
+                    <br class="col-12">
+                        <h5 class="">{{titles.0}}</h5>
+
+                        <p>{{abstract.0}}</p>
+                        <a href="{{urls.0}}" style="text-decoration: None; color: white;">Keep Reading on New York Times</a>
                 </div>
             </div>
             
             <div class="carousel-item">
-                <img src="https://placekitten.com/2003/300" class="d-block w-100" alt="...">
+                <img src="https://placekitten.com/2003/350" class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block p-2 mt-1">
                     <h5>{{titles.1}}</h5>
                     <p>{{abstract.1}}</p>
@@ -141,7 +130,7 @@
                 </div>
             </div>
             <div class="carousel-item">
-                <img src="https://placekitten.com/2004/300" class="d-block w-100" alt="...">
+                <img src="https://placekitten.com/2004/350" class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block p-2 mt-1">
 
                     <h5>{{titles.2}}</h5>
@@ -163,7 +152,7 @@
     
 
     <!-- forecast -->
-    <div class="row border m-5 text-center" style="background-color: #b6d0e0;"> 
+    <div class="row border m-5 text-center rounded" style="background-color: #b6d0e0;"> 
         <!-- use javascript to populate forecast -->
         <h2 class="text-start">4 day forecast</h2>
         <!-- getting weekdays -->
@@ -173,18 +162,7 @@
             {% for min in min_for  %}
             <div class="col-3 "><span>Low: {{min}}</span></div>
             {% endfor %}
-
-
-
             {% for x in avg_for  %}
-            <!-- <div class="col-3">
-                <div class="w-100 rounded-pill" style="background-color: rgb(128, 195, 243);">
-                    <span>
-                        {{x}}
-                    </span>
-                </div>
-            </div> -->
-            
             {% if 25 > x %}
 
             <div class="d-flex justify-content-center col-3">
@@ -221,12 +199,8 @@
                 </div>
             </div>
 
-
             {% endif %}
-
             {% endfor %}
-
-
             {% for max in max_for %}
             <div class="col-3 "><span>High: {{max}}</span></div>
             {% endfor %}
@@ -251,16 +225,16 @@
 
 
 <script>
-    function pageLoad(){
-        console.log('page load')
-    }
-    // -------
+
+    // --------------------------------------------------------
+    
     const newsContents= document.getElementById('news-contents')
     getNews()
     async function getNews(){
         const url= 'https://api.nytimes.com/svc/mostpopular/v2/shared/1/facebook.json?api-key=WejtFmpOwuiZKQ8d2fAC7tq8hXpaRhV6'
         const response= await fetch(url)
         const data= await response.json()
+        console.log(data)
 
     }
 
@@ -332,6 +306,7 @@
         // const url= `https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${lat}&lon=${lon}&appid=${key}`
         const response= await fetch(url)
         const data= await response.json()
+        console.log(data)
 
         
     }

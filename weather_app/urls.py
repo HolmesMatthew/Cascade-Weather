@@ -27,4 +27,7 @@ urlpatterns = [
     path('logout/', views.logout_user, name='logout_user'),
     path('edit/<int:id>', views.edit_profile, name='edit'),
     path('test/', views.test, name='test'),
+    path("spotify/", views.spotify, name='spotify'),
+    path("spotify-login/", views.spotify_login, name='spotify-login')
+
 ]

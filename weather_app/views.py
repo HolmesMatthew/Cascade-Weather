@@ -15,8 +15,8 @@ from .funct import *
 # Create your views here.
 
 
-def test(request):
-    return render(request, 'weather_app/test.html')
+# def test(request):
+#     return render(request, 'weather_app/test.html')
 
 
 def index(request):
@@ -181,6 +181,9 @@ def get_weather(request):
     # print(news[0])
     titles = news[0]
     abstract = news[1]
+    abst_zero = abstract[0]
+    abst_one = abstract[1]
+    abst_two = abstract[2]
     urls = news[2]
     # for i, x in enumerate(titles):
     #     print(i)
@@ -216,7 +219,93 @@ def get_weather(request):
         'lon': location['lon'],
         'titles': titles,
         'abstract': abstract,
+        'abst_zero': abst_zero,
         'urls': urls,
 
     }
     return render(request, 'weather_app/home.html', context)
+
+# -----------------------------------------------
+
+
+def spotify(request):
+    CLIENT_ID = '8c4452fc1e6a4b3196c9214e07378883'
+    CLIENT_SECRET = '77f704981e9c4b89b83a7b965b31965b'
+
+    def get_token():
+
+        AUTH_URL = 'https://accounts.spotify.com/api/token'
+
+        auth_response = requests.post(AUTH_URL, {
+
+            'grant_type': 'client_credentials',
+            'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET
+        })
+        auth_response_data = auth_response.json()
+        access_token = auth_response_data['access_token']
+
+        return access_token
+
+    token = get_token()
+
+    def get_track(access_token):
+
+        headers = {
+            'Authorization': 'Bearer {token}'.format(token=access_token),
+            # 'Authorization': '{access_token}'.format(access_token=access_token),
+            # 'Content-Type': 'application/json'
+        }
+        print(headers)
+
+        BASE_URL = 'https://api.spotify.com/v1/'
+        track_id = '6y0igZArWVi6Iz0rj35c1Y'
+        response = requests.get(
+            BASE_URL + 'tracks/' + track_id, headers=headers)
+
+        # print(response.json())
+
+        # auth_response_data = auth_response.json()
+        # access_token = auth_response_data['access_token']
+
+    context = {
+        'token': token,
+        'id': CLIENT_ID
+    }
+    return render(request, 'weather_app/spotify.html', context)
+
+
+def spotify_login(request):
+    CLIENT_ID = '8c4452fc1e6a4b3196c9214e07378883'
+    CLIENT_SECRET = '77f704981e9c4b89b83a7b965b31965b'
+    client_id = CLIENT_ID
+    client_secret = CLIENT_SECRET
+    redirect_uri = 'http://127.0.0.1:8000/spotify/'
+
+    url = 'https://accounts.spotify.com/authorize/'
+
+    auth_response = requests.get(url, {
+
+        'client_id': CLIENT_ID,
+        'redirect_uri': redirect_uri,
+        'scopes': 'user-read-private user-read-email',
+    })
+    print(auth_response)
+    return redirect(reverse('spotify'))
+
+
+def test(request):
+    CLIENT_ID = '8c4452fc1e6a4b3196c9214e07378883'
+    redirect_uri = 'http://127.0.0.1:8000/spotify/'
+
+    # response = requests.get('https://accounts.spotify.com/authorize/', {
+    #     'client_id': CLIENT_ID,
+    #     'scopes': 'user-read-private user-read-email',
+    #     'redirect_uri': redirect_uri
+    # })
+    # print(response)
+    # return redirect(reverse('spotify'))
+    return HttpResponseRedirect(f'https://accounts.spotify.com/authorize/{CLIENT_ID}', headers={
+        'client_id': CLIENT_ID,
+        'redirect_uri': redirect_uri
+    })
