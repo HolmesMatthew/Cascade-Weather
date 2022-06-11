@@ -1,0 +1,104 @@
+{% extends "weather_app/home.html" %}
+{% load static %}
+{% block title %}
+<title>forecast</title>
+{% endblock title %}
+{% block content %}
+<br>
+<div id="daysFore" class="d-flex flex-column "></div>
+
+<script>
+
+    // forecast data
+    const min = {{min}}
+    const avg = {{avg}}
+    const max = {{max}}
+    // get the current day
+    const daysDiv= document.getElementById('daysFore')
+    const weekdays= ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+    const DayWeek = {{weekday}}
+    let weekDay = DayWeek
+    
+    for(let count=0; count < 4; count++){
+        const minList = []
+        const avgList = []
+        const maxList = []
+        
+        // min
+        for(let x of min){
+            
+            if(! minList.includes(x)){
+                minList.push(x)
+            }
+        }
+        // avg
+        for(let x of avg){
+            
+            if(! avgList.includes(x)){
+                avgList.push(x)
+            }
+        }
+        // max
+        for(let x of max){
+            if(! maxList.includes(x)){
+                maxList.push(x)
+            }
+        }
+
+        // get upcoming days
+        if(weekDay < weekdays.length-1){
+            weekDay++
+        }
+        else{
+            weekDay =0
+            console.log(weekDay)
+        }
+        
+        //  create divs for dropdown
+        const collapseDiv= document.createElement('div')
+        const divDropdown = document.createElement('div')
+        const divContent = document.createElement('div')
+        //create dropdown
+        collapseDiv.setAttribute('class', 'm-2 d-flex flex-inline-block')
+        collapseDiv.setAttribute('type','button')
+        collapseDiv.setAttribute('data-bs-toggle','collapse')
+        collapseDiv.setAttribute('data-bs-target',`#${weekdays[count]}`)
+        collapseDiv.setAttribute('aria-expanded','false')
+        collapseDiv.setAttribute('aria-controls',`collapseExample`)
+        collapseDiv.innerText = `${weekdays[weekDay]}`
+        const tempDiv = document.createElement('div')
+        tempDiv.setAttribute('class', 'mx-4')
+
+        const maxTempSpan= document.createElement('span')
+        maxTempSpan.setAttribute('class','text-bold')
+        maxTempSpan.innerText= ` ${maxList[count]}`
+        // collapseDiv.appendChild(maxTempSpan)
+        tempDiv.appendChild(maxTempSpan)
+        
+        const minTempSpan= document.createElement('span')
+        minTempSpan.setAttribute('class','text-muted')
+        minTempSpan.innerText= ` ${minList[count]}`
+        divDropdown.setAttribute('class',`collapse`)
+        divDropdown.setAttribute('id',`${weekdays[count]}`)
+        divContent. setAttribute('class', 'card card-body')
+        // collapseDiv.appendChild(minTempSpan)
+        tempDiv.appendChild(minTempSpan)
+        collapseDiv.appendChild(tempDiv)
+        
+        
+        //drop down text
+        divContent.innerText= `${weekdays[weekDay]}`
+        
+        daysDiv.appendChild(collapseDiv)
+        divDropdown.appendChild(divContent)
+        daysDiv.appendChild(divDropdown)
+        
+    }
+
+
+    
+
+</script>
+
+
+{% endblock content %}

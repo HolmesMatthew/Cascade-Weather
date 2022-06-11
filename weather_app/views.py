@@ -13,10 +13,8 @@ from .forms import NewUser, LoginUser, SearchWeather
 from django.contrib.auth.decorators import login_required
 from .funct import *
 # Create your views here.
-
-
-# def test(request):
-#     return render(request, 'weather_app/test.html')
+w = get_weather()
+icon_url = w['icon']
 
 
 def index(request):
@@ -32,6 +30,7 @@ def sign_up(request):
         form = NewUser()
 
         context = {
+            'icon_url':icon_url,
             'form': form,
         }
         return render(request, 'weather_app/sign_up.html', context)
@@ -53,7 +52,8 @@ def login_user(request):
     if request.method == "GET":
 
         return render(request, 'weather_app/login.html', {
-            'form': LoginUser()
+            'form': LoginUser(),
+            'icon_url':icon_url,
         })
     elif request.method == "POST":
         form = LoginUser(request.POST)
@@ -67,7 +67,8 @@ def login_user(request):
             else:
                 form.add_error('username', 'Invalid Credentials')
                 return render(request, 'weather_app/login.html', {
-                    'form': form
+                    'form': form,
+                    'icon_url':icon_url,
                 })
 
 
@@ -78,14 +79,16 @@ def logout_user(request):
 
 @login_required
 def profile(request):
-    return render(request, 'weather_app/profile.html')
+
+    return render(request, 'weather_app/profile.html', {'icon_url':icon_url,})
 
 
 @login_required
 def edit_profile(request, id):
     user = User.objects.filter(id=id)
     return render(request, 'weather_app/edit.html', {
-        'user': user
+        'user': user,
+        'icon_url':icon_url,
     })
 
 
@@ -132,7 +135,7 @@ def search(request):
                 'temp': temp,
                 'temp_min': temp_min,
                 'temp_max': temp_max,
-                'icon_url': icon_url
+                'icon_url': icon_url,
             }
             return render(request, 'weather_app/search.html', context)
         except:
@@ -145,37 +148,21 @@ def search(request):
         # }
         # return render(request, 'weather_app/search.html', context)
 
-
-def get_weather(request):
-    weekdays = ["Monday", "Tuesday", "Wednesday",
-                "Thursday", "Friday", "Saturday", "Sunday"]
-    # get date
-    t = date.today()
-    dayweek = t.weekday()
-    day = weekdays[dayweek]
-    test = str(t)
-    today = int(test[8: 10])
-    # -----------------------------------------------
+# also home
+def home(request):
     # get location from ip-api
     location = get_location()
     # get weather for main display
-    response_weather = requests.get(
-        f"https://api.openweathermap.org/data/2.5/weather?lat={location['lat']}&lon={location['lon']}&appid=521030405ccbd08fb7f9d42f0860faec")
-    data = response_weather.text
-    # turn the data into json
-    data_json = json.loads(data)
-    # weather description
-    weather_description = data_json['weather'][0]['description']
-    icon = data_json['weather'][0]['icon']
-    icon_url = (f'http://openweathermap.org/img/wn/{icon}@2x.png')
-    # get the city
-    city = data_json['name']
-    # temp data
-    minTemp = kelvin_to_fahrenheit(data_json['main']['temp_min'])
-    temp = kelvin_to_fahrenheit(data_json['main']['temp'])
-    maxTemp = kelvin_to_fahrenheit(data_json['main']['temp_max'])
+    weather= get_weather()
+    minTemp= weather['min']
+    temp= weather['temp']
+    maxTemp= weather['max']
+    weather_description= weather['weather_description']
+    icon_url= weather['icon']
+    city= weather['city']
 
     # -----------------------------------------------
+    
 
     news = get_news()
     # print(news[0])
@@ -191,17 +178,18 @@ def get_weather(request):
     # f_temp= round((float(temp)-273.15) * (9/5) + 32)
 
     # -----------------------------------------------
+    # get date for forecast 
+    the_date=get_date()
+    today= the_date['today']
+    weekday= the_date['week_day']
+    # -----------------------------------------------
     # get forecast
     forecast = get_forecast()
-    forecast_min = forecast[0]
-    forecast_avg = forecast[1]
-    forecast_max = forecast[2]
+    forecast_min = forecast['min']
+    forecast_avg = forecast['avg']
+    forecast_max = forecast['max']
 
     context = {
-        # the current date
-        'today': today,
-        # for the dates for the forecast
-        'weekday': dayweek,
         # current weather and location
         'weather_description': weather_description,
         'min': minTemp,
@@ -209,6 +197,10 @@ def get_weather(request):
         'max': maxTemp,
         'city': city,
         'icon_url': icon_url,
+
+        # for the dates for the forecast
+        'today': today,
+        'weekday': weekday,
         # forecast
         'fore': forecast,
         'min_for': forecast_min,
@@ -224,6 +216,36 @@ def get_weather(request):
 
     }
     return render(request, 'weather_app/home.html', context)
+
+def forecast(request):
+
+    the_date=get_date()
+    today = the_date['today']
+    weekday = the_date['week_day']
+
+    forecast = get_forecast()
+    forecast_min = forecast['min']
+    forecast_avg = forecast['avg']
+    forecast_max = forecast['max']
+
+
+    context = {
+
+        'min':forecast_min,
+        'avg':forecast_avg,
+        'max':forecast_max,
+        'today':today,
+        'weekday':weekday,
+        'icon_url':icon_url,
+
+
+    }
+    return render(request, 'weather_app/forecast.html',context)
+
+
+
+
+
 
 # -----------------------------------------------
 

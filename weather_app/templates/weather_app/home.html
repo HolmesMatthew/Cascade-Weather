@@ -1,213 +1,391 @@
- {% load static %}
- <!DOCTYPE html>
+{% load static %}
+<!DOCTYPE html>
 <html lang="en" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!--  -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
     {% block title %}
     <title>Cascade Weather</title>
     {% endblock title %}
+  </head>
 
-</head>
-    
-<body style="background-color: #deeef9;">
-    <script>
+  <body style="background-color: #deeef9">
+<!-- Nav -->
+<nav class="navbar fixed-top" style="background-color: #a8d1ee">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-start">
 
-    </script>
-
-
-    <nav class="navbar navbar-expand-lg " style="background-color: #a8d1ee;">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="{% url 'home' %}" >
-                <!-- <img src="{% static 'image/z.png' %}" alt="" width="30" height="24" class="d-inline-block align-text-top"> -->
-                <div class="d-inline-flex m-0 p-0 align-items-center ">
-                    <div>
-                        <span class="fs-6">{{temp}}</span> 
-                        <img src="{{icon_url}}" alt="" width="30" height="24" class="d-inline-block align-text-top">
-                    </div>
-
-                        Cascade Weather
-
-                </div>
-          </a>
-
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+      <a class="navbar-brand" href="{% url 'home' %}"> 
+        <span class="text-muted">{{temp}}</span>
+        <img src="{{icon_url}}" width="30" height="24" alt="">
+        Cascade Weather</a>
+        <div id="nav-search">
+          <form
+          class="d-flex"
+          role="search"
+          action="{% url 'search' %}"
+          method="POST"
+          >
+          {% csrf_token %}
+          <!-- call search view -->
+          <input
+          id="search"
+          name="search"
+          class="form-control me-2"
+          type="search"
+          placeholder="Search by Zip Code"
+          aria-label="Search"
+          />
+          <button class="btn btn-outline-success" type="submit">
+            Search
           </button>
-          <div class="d-flex justify-content-start">
-              <form class="d-flex" role="search" action="{% url 'search' %}" method="POST">
-                  {% csrf_token %}
-                  <input id="search" name="search" class="form-control me-2" type="search" placeholder="Search by Zip Code" aria-label="Search">
-                  <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-            </div>
-                
-            <div class="collapse navbar-collapse" id="navbarNav">
-            <div class="d-flex justify-content-end w-100">
+        </form>
+      </div>
+    </div>
 
-            {% if not request.user.is_anonymous and 'profile' not in request.path %}
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'profile' %}">Account</a>
-                </li>
-            </ul>
-            {% elif 'profile' in request.path %}
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout_user' %}">Logout</a>
-                </li>
-                
-            </ul>        
-            
-            {% else %}
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'sign_up' %}">Sign up</a>
-                </li>
-                {% endif %}
-            </ul>
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Cascade Weather</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div id="phone">
+
+          <form class="d-flex" role="search" id="phone" method="POST" action="{% url 'search' %}">
+            {% csrf_token %}
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
         </div>
+
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+          {%if not request.user.is_anonymous and 'profile' not in request.path%}
+          <li class="dropdown-item"><a class="nav-link" href="{% url 'profile' %}">Account</a></li>
+          {% elif 'profile' in request.path %}
+          <!-- <li class="dropdown-item"><a class="nav-link" href="{% url 'edit' user.id %}">Edit Account</a></li> -->
+          <li class="dropdown-item"><a class="nav-link" href="{% url 'logout_user' %}">Logout</a></li>
+          {% else %}
+          <li class="dropdown-item"><a class="nav-link" href="{% url 'sign_up' %}">Sign up</a></li>
+          {% endif %}
+          
+          <li class="dropdown-item"><a class="nav-link" href="{% url 'forecast' %}">Forecast</a></li>
+
+          <!-- <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Dropdown 
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown">
+              <li><a class="dropdown-item" href="#">Action</a></li>
+              <li><a class="dropdown-item" href="#">Another action</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+          </li> -->
+        </ul>
+        
+      </div>
     </div>
-    </div>
-</div>
+  </div>
 </nav>
+    <!--  -->
+<!-- end nav -->
+<br class="col-12">
 
-      {% block content %}
-
-    {% if not request.user.is_anonymous %}
+<br>
+    {% block content %} {% if not request.user.is_anonymous %}
     <h2 class="m-2">Welcome {{request.user}}</h2>
     {% endif %}
+
+
+    <!-- search @screen size 425px -->
+    
+
+<!-- main -->
+
+
+    <!-- main@425 -->
+    <div id="main-Lphone">
+      <div class="text-center border m-3 rounded">
+        <br>
+        <h3>Today in {{city}}</h3>
+        <h4>{{temp}} degrees</h4>
+        <h5>{{weather_description}}</h5>
+        <h5 class="d-inline">Low: {{min}}</h5>
+        <h5 class="d-inline">High: {{max}}</h5>
+      </div>
+
+      <div class="d-flex flex-row ">
+
+        <!-- java mobile view -->
+        <div id="Sdays" class="d-inline-flex flex-column m-1"></div>
+        
+        <!-- django view mobile view -->
+        <div class="d-flex flex-column">
+          <div class="d-flex flex-row justify-content-between">
+
+            <div id="min" class="d-flex flex-column ">
+              {% for x in min_for %}
+              <span class="m-3">{{x}}</span>
+              {% endfor %}
+            </div>
+
+            <div id="avg" class="d-flex flex-column " style="width: 150px;">
+              {% for x in avg_for %}
+              <div class="m-3">
+
+                <div class="progress m-1">
+                  {% if 32 > x %}
+                  <div class="progress-bar" role="progressbar" style="width: {{x}}%;" 
+                  aria-valuenow="{{x}}" aria-valuemin="0" aria-valuemax="100">{{x}}</div>
+
+                </div>
+
+                  {% elif x >= 40 and 50 > x %}
+                  <div class="progress-bar" role="progressbar" style="width: {{x}}%;" 
+                  aria-valuenow="{{x}}" aria-valuemin="0" aria-valuemax="100">{{x}}</div>
+                </div>
+
+                  {% elif x >= 50 and 60 > x %}
+                  <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(90deg, rgb(160, 222, 219),rgb(3, 165, 209)); width: {{x}}%;" 
+                  aria-valuenow="{{x}}" aria-valuemin="0" aria-valuemax="100">{{x}}</div>
+                </div>
+
+                  {% elif x >= 60 and 70 > x %}
+                  <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(62deg, rgb(233, 121, 112),rgb(213, 192, 80));width: {{x}}%;" 
+                  aria-valuenow="{{x}}" aria-valuemin="0" aria-valuemax="100">{{x}}</div>
+                </div>  
+
+                  {% elif x >= 70 and 80 > x %}
+                  <div class="progress-bar" role="progressbar" style="background-image: linear-gradient(62deg, rgb(233, 121, 112),rgb(213, 192, 80));width: {{x}}%;" 
+                  aria-valuenow="{{x}}" aria-valuemin="0" aria-valuemax="100">{{x}}</div>
+                </div>
+
+                  {% elif x >= 80 and 90 > x %}
+                  <div class="progress-bar" role="progressbar" style="width: {{x}}%;" 
+                  aria-valuenow="{{x}}" aria-valuemin="0" aria-valuemax="100">{{x}}</div>
+                </div>
+
+                  {% elif x >= 90 and 100 > x %}
+                  <div class="progress-bar" role="progressbar" style=" width: {{x}}%;" 
+                  aria-valuenow="{{x}}" aria-valuemin="0" aria-valuemax="100">{{x}}</div>
+                </div>
+
+                  {% endif %}
+
+              </div>
+              {% endfor %}
+            </div>
+
+            <div id="max" class="d-flex flex-column ">
+              {% for x in max_for %}
+              <span class="m-3">{{x}}</span>
+              {% endfor %}
+              
+            </div>
+          </div>
+        </div>
+      </div>
       
-      <!-- main -->
-      <div class="row border rounded m-5 " style="background-color: #b6d0e0;">
-          <div class=" col-8 m-4">
-              <div class="d-flex">
-                  <h2>Today in {{city}} </h2>
-                  <span class="text-muted mx-4" id="time">as of </span>
-                </div>
-                <h3>{{temp}} degrees</h3>
-                <h4>{{weather_description}}</h4>
-                <h5 class="d-inline">Low: {{min}}</h5> <h5 class="d-inline">High: {{max}}</h5>
+      
+    </div>
+    <!-- main@768 -->
+    <div id="main-ipadUp" class="row border rounded m-5" style="background-color: #b6d0e0">
+      <div class="col-8 m-4">
+        <div class="d-flex">
+          <h2>Today in {{city}}</h2>
+          <span class="text-muted mx-4" id="time">as of </span>
+        </div>
+        <h3>{{temp}} degrees</h3>
+        <h4>{{weather_description}}</h4>
+        <h5 class="d-inline">Low: {{min}}</h5>
+        <h5 class="d-inline">High: {{max}}</h5>
+      </div>
+
+      <div class="col-3">
+        <span><img src="{{icon_url}}" alt="" class="img" /></span>
+      </div>
+    </div>
+
+<!-- News -->
+    <div id="news">
+
+      <div
+      id="carouselExampleCaptions"
+      class="carousel slide m-5"
+      data-bs-ride="false"
+      >
+      <div class="carousel-indicators">
+        <button
+        type="button"
+        data-bs-target="#carouselExampleCaptions"
+        data-bs-slide-to="0"
+        class="active"
+        aria-current="true"
+        aria-label="Slide 1"
+        ></button>
+        <button
+        type="button"
+        data-bs-target="#carouselExampleCaptions"
+        data-bs-slide-to="1"
+        aria-label="Slide 2"
+        ></button>
+        <button
+        type="button"
+        data-bs-target="#carouselExampleCaptions"
+        data-bs-slide-to="2"
+        aria-label="Slide 3"
+        ></button>
+      </div>
+      
+      <div class="d-flex carousel-inner rounded">
+        <div class="carousel-item active">
+          <img
+          src="https://placekitten.com/2001/350"
+          class="d-block w-100"
+          alt="..."
+          />
+          <div class="carousel-caption d-none d-md-block">
+            <div class="d-flex flex-column justify-content-center">
+              <h5 class="">{{titles.0}}</h5>
+              <p>{{abstract.0}}</p>
+              <a href="{{urls.0}}" style="text-decoration: None; color: white"
+              >Keep Reading on New York Times</a
+              >
+              <br />
             </div>
-            
-            <div class="col-3 ">
-                <span><img src="{{icon_url}}" alt="" class="img"></span>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img
+          src="https://placekitten.com/2003/350"
+          class="d-block w-100"
+          alt="..."
+          />
+          <div class="carousel-caption d-none d-md-block">
+            <div class="d-flex flex-column justify-content-center">
+              <h5>{{titles.1}}</h5>
+              <p>{{abstract.1}}</p>
+              <a href="{{urls.1}}" style="text-decoration: None; color: white"
+              >Keep Reading on New York Times</a
+              >
+              <br />
             </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img
+          src="https://placekitten.com/2004/350"
+          class="d-block w-100"
+          alt="..."
+          />
+          <div class="carousel-caption d-none d-md-block">
+            <div class="d-flex flex-column justify-content-center">
+              <h5>{{titles.2}}</h5>
+              <p>{{abstract.2}}</p>
+              <a href="{{urls.2}}" style="text-decoration: None; color: white"
+              >Keep Reading on New York Times</a
+              >
+              <br />
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+      class="carousel-control-prev"
+      type="button"
+      data-bs-target="#carouselExampleCaptions"
+      data-bs-slide="prev"
+      >
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button
+    class="carousel-control-next"
+    type="button"
+    data-bs-target="#carouselExampleCaptions"
+    data-bs-slide="next"
+    >
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+</div>
+
+<!-- forecast -->
+<div id="forecast-ipadUp"
+class="row border m-5 text-center rounded"
+style="background-color: #b6d0e0"
+>
+      <!-- use javascript to populate forecast -->
+      <h2 class="text-start">4 day forecast</h2>
+      <!-- getting weekdays -->
+      <div id="Ldays" class="d-flex flex-row"></div>
+
+      <div class="d-flex row">
+        {% for min in min_for %}
+        <div class="col-3"><span>Low: {{min}}</span></div>
+        {% endfor %} {% for x in avg_for %} 
+
+        {% if 24 > x %}
+          
+
+
+        <div class="d-flex justify-content-center col-3">
+          <div
+            class="w-25 rounded-pill"
+            style="background-color: rgb(128, 195, 243)"
+          >
+            <span> {{x}} </span>
+          </div>
+        </div>
+        {% elif x > 25 and x < 51 %}
+        <div class="d-flex justify-content-center col-3">
+          <div
+            class="w-50 rounded-pill"
+            style="background-color: rgb(242, 233, 62)"
+          >
+            <span> {{x}} </span>
+          </div>
         </div>
 
-    <!-- News -->
-        <div id="carouselExampleCaptions" class="carousel slide m-5" data-bs-ride="false">
-            <div class="carousel-indicators">
-              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-              <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            </div>
-
-            <div class="d-flex carousel-inner rounded ">
-              <div class="carousel-item active">
-                <img src="https://placekitten.com/2001/350" class="d-block w-100" alt="...">
-                <div class="carousel-caption d-none d-md-block p-2 mt-1">
-                    <br class="col-12">
-                        <h5 class="">{{titles.0}}</h5>
-
-                        <p>{{abstract.0}}</p>
-                        <a href="{{urls.0}}" style="text-decoration: None; color: white;">Keep Reading on New York Times</a>
-                </div>
-            </div>
-            
-            <div class="carousel-item">
-                <img src="https://placekitten.com/2003/350" class="d-block w-100" alt="...">
-                <div class="carousel-caption d-none d-md-block p-2 mt-1">
-                    <h5>{{titles.1}}</h5>
-                    <p>{{abstract.1}}</p>
-                    <a href="{{urls.1}}" style="text-decoration: None; color: white;">Keep Reading on New York Times</a>
-                    
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img src="https://placekitten.com/2004/350" class="d-block w-100" alt="...">
-                <div class="carousel-caption d-none d-md-block p-2 mt-1">
-
-                    <h5>{{titles.2}}</h5>
-                    <p>{{abstract.2}}</p>
-                    <a href="{{urls.2}}" style="text-decoration: None; color: white;">Keep Reading on New York Times</a>
-                </div>
-            </div>
+        {% elif x >= 51 and x < 75 %}
+        <div class="d-flex justify-content-center col-3">
+          <div
+            class="w-75 rounded-pill"
+            style="background-color: rgb(233, 155, 67)"
+          >
+            <span> {{x}} </span>
+          </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
+
+        {% elif x > 75 and x < 100 %}
+        <div class="d-flex justify-content-center col-3">
+          <div
+            class="w-100 rounded-pill"
+            style="background-color: rgb(240, 116, 116)"
+          >
+            <span> {{x}} </span>
+          </div>
+        </div>
+        {% endif %} {% endfor %} {% for max in max_for %}
+        <div class="col-3"><span>High: {{max}}</span></div>
+        {% endfor %}
+      </div>
     </div>
-    
-    
-
-    <!-- forecast -->
-    <div class="row border m-5 text-center rounded" style="background-color: #b6d0e0;"> 
-        <!-- use javascript to populate forecast -->
-        <h2 class="text-start">4 day forecast</h2>
-        <!-- getting weekdays -->
-        <div id="days" class="d-flex flex-row "></div>
-
-        <div class="d-flex row">
-            {% for min in min_for  %}
-            <div class="col-3 "><span>Low: {{min}}</span></div>
-            {% endfor %}
-            {% for x in avg_for  %}
-            {% if 25 > x %}
-
-            <div class="d-flex justify-content-center col-3">
-                <div class="w-25 rounded-pill" style="background-color: rgb(128, 195, 243);">
-                    <span>
-                        {{x}}
-                    </span>
-                </div>
-            </div>
-            {% elif x > 25 and x < 50 %}
-            <div class="d-flex justify-content-center col-3">
-                <div class="w-50 rounded-pill" style="background-color: rgb(242, 233, 62);">
-                    <span>
-                        {{x}}
-                    </span>
-                </div>
-            </div>
-
-            {% elif x > 50 and x < 75 %}
-            <div class="d-flex justify-content-center col-3">
-                <div class="w-75 rounded-pill" style="background-color: rgb(233, 155, 67);">
-                    <span>
-                        {{x}}
-                    </span>
-                </div>
-            </div>
-
-            {% elif x > 75 and x < 100 %}
-            <div class="d-flex justify-content-center col-3">
-                <div class="w-100 rounded-pill" style="background-color: rgb(240, 116, 116);">
-                    <span>
-                        {{x}}
-                    </span>
-                </div>
-            </div>
-
-            {% endif %}
-            {% endfor %}
-            {% for max in max_for %}
-            <div class="col-3 "><span>High: {{max}}</span></div>
-            {% endfor %}
-        </div> 
-        <!-- end forecast -->
-    
-    </div>
+    <!-- end forecast -->
 
     <!-- depreciated -->
     <!-- <iframe class=""
@@ -221,103 +399,116 @@
         &q=42.2808,-122.93068">
     </iframe> -->
 
+    <script>
+
+      // --------------------------------------------------------
+
+      const newsContents= document.getElementById('news-contents')
+      getNews()
+      async function getNews(){
+          const url= 'https://api.nytimes.com/svc/mostpopular/v2/shared/1/facebook.json?api-key=WejtFmpOwuiZKQ8d2fAC7tq8hXpaRhV6'
+          const response= await fetch(url)
+          const data= await response.json()
+          console.log(data)
+
+      }
+
+      // for forecast
+      const containerS= document.getElementById('Sdays')
+      const container= document.getElementById('Ldays')
+      const today= {{today}}
+      const weekdays= ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+
+      const dayWeek= {{weekday}}
+      let weekDay= dayWeek
+
+
+      for(let count =0; count < 4; count++){
+          if(weekDay < weekdays.length-1){
+              weekDay++
+          }
+          else {
+              weekDay = 0
+          }
+          const div= document.createElement('div')
+          div.setAttribute('class','col-3')
+          let test= count+today
+          // console.log(test)
+          const span=document.createElement('span')
+
+          // span.innerText= `${weekdays[weekDay]} the ${test}`
+          span.innerText= `${weekdays[weekDay]}`
+
+          div.appendChild(span)
+          span.setAttribute('class','me-4')
+          container.appendChild(div)
+
+          // for mobile view
+          const button=document.createElement('button')
+          button.setAttribute('class','popover-btn btn btn-secondary text-start  m-2')
+          button.setAttribute('data-bs-container','body')
+          button.setAttribute('data-bs-toggle','popover')
+          button.setAttribute('data-bs-placement','top')
+          button.setAttribute('data-bs-content','jaskdfkjasljk')
+          // span.innerText= `${weekdays[weekDay]} the ${test}`
+          button.innerText= `${weekdays[weekDay]}`
 
 
 
-<script>
+          containerS.appendChild(button)
+      }
 
-    // --------------------------------------------------------
-    
-    const newsContents= document.getElementById('news-contents')
-    getNews()
-    async function getNews(){
-        const url= 'https://api.nytimes.com/svc/mostpopular/v2/shared/1/facebook.json?api-key=WejtFmpOwuiZKQ8d2fAC7tq8hXpaRhV6'
-        const response= await fetch(url)
-        const data= await response.json()
-        console.log(data)
+      // ------------------------------
+      // for location and time in main display
+      getTime()
+      function getTime(){
+          const timeSpan= document.getElementById('time')
+          const today = new Date();
 
-    }
+          const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+          const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+          const dateTime = date+' '+time;
 
-    // for forecast
-    const container= document.getElementById('days')
-    const today= {{today}}
-    const weekdays= ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
-
-    const dayWeek= {{weekday}}
-    let weekDay= dayWeek
+          const timeBox= document.createElement('span')
+          timeBox.innerHTML= dateTime
+          timeSpan.appendChild(timeBox)
+      }
 
 
-    for(let count =1; count < 5; count++){
-        if(weekDay < weekdays.length-1){
-            weekDay++
-        }
-        else {
-            weekDay = 0
-        }
-        const div= document.createElement('div')
-        div.setAttribute('class','col-3')
-        let test= count+today
-        // console.log(test)
-        const span=document.createElement('span')
-       
-        // span.innerText= `${weekdays[weekDay]} the ${test}`
-        span.innerText= `${weekdays[weekDay]}`
-
-        div.appendChild(span)
-        span.setAttribute('class','me-4')
-        container.appendChild(div)
-    }
-    // ------------------------------
-    // for location and time in main display
-    getTime()
-    function getTime(){
-        const timeSpan= document.getElementById('time')
-        const today = new Date();
-
-        const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-        const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-        const dateTime = date+' '+time; 
-        
-        const timeBox= document.createElement('span')
-        timeBox.innerHTML= dateTime
-        timeSpan.appendChild(timeBox)
-    }
-    
-    
-    getIp()
-    async function getIp(){
-        const url= 'http://ip-api.com/json'
-        const response= await fetch(url)
-        const data= await response.json()
-
-        
-        let lat= data.lat
-        let lon= data.lon
-        
-        getForecast(lat,lon)
-        
-    }
-    
-    
-    async function getForecast(lat, lon){
-        const key= '521030405ccbd08fb7f9d42f0860faec'
-        // docs: for open weather api https://openweathermap.org/forecast5
-        const url= `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${key}`
-        // const url= `https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${lat}&lon=${lon}&appid=${key}`
-        const response= await fetch(url)
-        const data= await response.json()
-        console.log(data)
-
-        
-    }
-    
-    
-</script>
+      getIp()
+      async function getIp(){
+          const url= 'http://ip-api.com/json'
+          const response= await fetch(url)
+          const data= await response.json()
 
 
-{% endblock content %}
-<div class="border-top text-center">
-    <h5>&copy;Matthew Holmes 2022</h5>
-</div>
-</body>
+          let lat= data.lat
+          let lon= data.lon
+
+          getForecast(lat,lon)
+
+      }
+
+
+      async function getForecast(lat, lon){
+          const key= '521030405ccbd08fb7f9d42f0860faec'
+          // docs: for open weather api https://openweathermap.org/forecast5
+          const url= `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${key}`
+          // const url= `https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${lat}&lon=${lon}&appid=${key}`
+          const response= await fetch(url)
+          const data= await response.json()
+          console.log(data)
+
+
+      }
+      const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+      const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+    </script>
+
+    {% endblock content %}
+    <!-- Footer -->
+    <div class="border-top text-center">
+      <h5>&copy;Matthew Holmes 2022</h5>
+    </div>
+  </body>
 </html>

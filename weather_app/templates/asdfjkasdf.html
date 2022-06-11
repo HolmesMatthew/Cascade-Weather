@@ -1,0 +1,82 @@
+<nav class="navbar navbar-expand-lg" style="background-color: #a8d1ee">
+
+    <div class="container-fluid">
+      <div class="d-flex justify-content-between w-100">
+        <!-- name and logo -->
+        <div class="d-inline-flex ">
+            <a class="navbar-brand" href="{% url 'home' %}">
+              <div class="d-inline-flex m-0 p-0 align-items-center">
+                <div class="">
+                  <span class="fs-6">{{temp}}</span>
+                  <img
+                    src="{{icon_url}}"
+                    alt=""
+                    width="30"
+                    height="24"
+                    class="d-inline-block align-text-top"
+                  />
+                </div>
+                Cascade Weather
+              </div>
+            </a>
+              <div id="nav-search">
+
+                <form
+                class="d-flex"
+                role="search"
+                action="{% url 'search' %}"
+                method="POST"
+                >
+                {% csrf_token %}
+                <!-- call search view -->
+                <input
+                id="search"
+                name="search"
+                class="form-control me-2"
+                type="search"
+                placeholder="Search by Zip Code"
+                aria-label="Search"
+                />
+                <button class="btn btn-outline-success" type="submit">
+                  Search
+                </button>
+              </form>
+            </div>
+        </div>
+
+        <!-- start of navbar-collapse -->
+        <!-- <div class="collapse navbar-collapse" id="navbarNav"> -->
+        <div class="d-flex mx-3">
+          <ul class="navbar-nav">
+            <!-- dropdown -->
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Menu
+              </a>
+
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {%if not request.user.is_anonymous and 'profile' not in request.path%}
+                <li class="dropdown-item"><a class="nav-link" href="{% url 'profile' %}">Account</a></li>
+                {% elif 'profile' in request.path %}
+                <li class="dropdown-item"><a class="nav-link" href="{% url 'logout_user' %}">Logout</a></li>
+                {% else %}
+                <li class="dropdown-item"><a class="nav-link" href="{% url 'sign_up' %}">Sign up</a></li>
+                {% endif %}
+                
+                <li class="dropdown-item"><a class="nav-link" href="{% url 'forecast' %}">Forecast</a></li>
+
+              </ul>
+
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </nav>

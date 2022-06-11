@@ -15,3 +15,63 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+/* adjust for various screen sizes */
+
+/* phone */
+@media only screen and (max-width: 425px) {
+  #nav-search{
+    display: none;
+  }
+  #main-ipadUp{
+    display: none;
+  }
+  #news{
+    display: none;
+  }
+  #forecast-ipadUp{
+    display: none;
+  }
+  
+  #phone{
+    display: inline-block;
+    
+  }
+}
+/* tablet */
+@media only screen and (max-width: 768px) and (min-width:426px) {
+  #nav-search{
+    display: none;
+  }
+  #phone{
+    display: inline-block;
+  }
+  #news{
+    display: none;
+  }
+  #main-Lphone{
+    display: none;
+  }
+}
+/* laptop */
+@media only screen and (max-width: 1024px) and (min-width:769px) {
+  #phone{
+    display: none;
+  }
+  #main-Lphone{
+    display: none;
+  }
+
+}
+/* Everything else */
+@media only screen and (max-width: 2560px) and (min-width:1025px) {
+  #phone{
+    display: none;
+  }
+  #main-Lphone{
+    display: none;
+  }
+
+}
