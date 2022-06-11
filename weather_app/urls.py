@@ -19,12 +19,18 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('home/', views.get_weather, name='home'),
+    path('home/', views.home, name='home'),
     path('profile/', views.profile, name='profile'),
     path('search/', views.search, name='search'),
     path('signup/', views.sign_up, name='sign_up'),
     path('login/', views.login_user, name='login_user'),
     path('logout/', views.logout_user, name='logout_user'),
     path('edit/<int:id>', views.edit_profile, name='edit'),
+    path('forecast/', views.forecast, name='forecast'),
+    
+    # 
     path('test/', views.test, name='test'),
+    path("spotify/", views.spotify, name='spotify'),
+    path("spotify-login/", views.spotify_login, name='spotify-login')
+
 ]
